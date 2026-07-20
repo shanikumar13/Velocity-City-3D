@@ -1,0 +1,30 @@
+{
+  "name": "velocity-city-3d",
+  "version": "1.0.0",
+  "description": "A lightweight, high-performance 3D low-poly browser driving game built with HTML, CSS, JavaScript, and Three.js.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y serve -p 8080 .",
+    "dev": "npx -y serve -p 8080 ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/user/velocity-city-3d.git"
+  },
+  "keywords": [
+    "threejs",
+    "3d-game",
+    "driving-simulator",
+    "low-poly",
+    "car-physics",
+    "browser-game",
+    "javascript",
+    "webgl",
+    "html5-game"
+  ],
+  "author": "Velocity Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

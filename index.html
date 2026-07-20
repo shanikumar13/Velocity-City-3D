@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Velocity City 3D - Low Poly Driving Simulator</title>
+    <meta name="description" content="A lightweight, high-performance 3D low-poly browser driving game created with Three.js. Drive freely in a vibrant city with smooth car physics.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Three.js Engine Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <!-- 3D WebGL Render Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- UI Overlay Layer -->
+    <div id="ui-container">
+        
+        <!-- Top Navigation Header Bar -->
+        <header id="top-bar">
+            <div class="brand">
+                <span class="icon">🚗</span>
+                <span class="title">VELOCITY CITY</span>
+            </div>
+            
+            <div class="top-controls">
+                <button id="btn-sound" class="ui-btn icon-btn" title="Toggle Sound (M)">
+                    <span class="icon" id="sound-icon">🔊</span>
+                </button>
+                <button id="btn-camera" class="ui-btn icon-btn" title="Change Camera View (C)">
+                    <span class="icon">📹</span>
+                </button>
+                <button id="btn-fullscreen" class="ui-btn icon-btn" title="Toggle Fullscreen (F)">
+                    <span class="icon">⛶</span>
+                </button>
+                <button id="btn-reset" class="ui-btn text-btn" title="Reset Car Position (R)">
+                    <span>RESET [R]</span>
+                </button>
+                <button id="btn-pause" class="ui-btn text-btn" title="Pause Game (P / ESC)">
+                    <span>PAUSE [P]</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Notification Toast Alert -->
+        <div id="toast" class="toast hidden">Car Reset!</div>
+
+        <!-- Controls Info Badge (Desktop) -->
+        <div id="controls-badge">
+            <div class="badge-title">CONTROLS</div>
+            <div class="badge-row"><span class="key">W</span> <span class="key">S</span> Accelerate / Reverse</div>
+            <div class="badge-row"><span class="key">A</span> <span class="key">D</span> Steer Left / Right</div>
+            <div class="badge-row"><span class="key">SPACE</span> Handbrake / Drift</div>
+            <div class="badge-row"><span class="key">R</span> Reset Car Position</div>
+            <div class="badge-row"><span class="key">C</span> Change Camera Angle</div>
+            <div class="badge-row"><span class="key">P</span> Pause / Resume</div>
+        </div>
+
+        <!-- Speedometer & HUD (Bottom Right) -->
+        <div id="speedometer-container">
+            <svg class="gauge-svg" viewBox="0 0 200 200">
+                <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
+                <circle id="gauge-fill" class="gauge-fill" cx="100" cy="100" r="80"></circle>
+            </svg>
+            <div class="gauge-center">
+                <div id="speed-value">0</div>
+                <div class="speed-unit">KM/H</div>
+                <div id="gear-indicator" class="gear-badge">D</div>
+            </div>
+        </div>
+
+        <!-- Touch Controls for Mobile Devices -->
+        <div id="touch-controls" class="touch-only">
+            <!-- Left Cluster: Steering D-Pad -->
+            <div class="touch-cluster touch-left">
+                <button id="touch-left" class="touch-btn steer-btn">◀</button>
+                <button id="touch-right" class="touch-btn steer-btn">▶</button>
+            </div>
+
+            <!-- Right Cluster: Gas, Brake, Handbrake -->
+            <div class="touch-cluster touch-right">
+                <div class="touch-row">
+                    <button id="touch-handbrake" class="touch-btn action-btn handbrake-btn">DRIFT</button>
+                </div>
+                <div class="touch-row pedals">
+                    <button id="touch-brake" class="touch-btn pedal-btn brake-btn">BRAKE</button>
+                    <button id="touch-accel" class="touch-btn pedal-btn accel-btn">GAS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Modal Menu -->
+        <div id="pause-modal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <h2>GAME PAUSED</h2>
+                <p class="subtitle">Take a break or review your driving controls</p>
+                
+                <div class="modal-body">
+                    <div class="controls-guide">
+                        <h3>Keyboard Driving Controls</h3>
+                        <ul>
+                            <li><span class="k">W</span> / <span class="k">▲</span> Accelerate</li>
+                            <li><span class="k">S</span> / <span class="k">▼</span> Brake & Reverse</li>
+                            <li><span class="k">A</span> / <span class="k">◄</span> Turn Left</li>
+                            <li><span class="k">D</span> / <span class="k">►</span> Turn Right</li>
+                            <li><span class="k">Space</span> Handbrake / Drift</li>
+                            <li><span class="k">R</span> Reset Car Position</li>
+                            <li><span class="k">C</span> Change Camera Angle</li>
+                            <li><span class="k">M</span> Mute / Unmute Sound</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-resume" class="btn primary-btn">Resume Driving</button>
+                    <button id="btn-restart" class="btn secondary-btn">Restart Game</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Modules -->
+    <script src="js/audio.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/car.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/city.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
