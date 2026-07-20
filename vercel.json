@@ -1,14 +1,8 @@
 {
-  "version": 2,
-  "public": true,
-  "cleanUrls": true,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "headers": {
-        "cache-control": "s-maxage=31536000, stale-while-revalidate"
-      },
-      "dest": "/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
